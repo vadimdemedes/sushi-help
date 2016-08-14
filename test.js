@@ -1,27 +1,23 @@
 'use strict';
 
-/**
- * Dependencies
- */
-
 const sushi = require('sushi');
-const help = require('./');
 const test = require('ava');
+const help = require('./');
 
+test('display help', async t => {
+	let loggedStr;
 
-/**
- * Tests
- */
-
-test.cb('display help', t => {
-	t.plan(1);
-
+	const originalLog = console.log;
 	console.log = function (str) {
-		t.is(str, 'my help message');
-		t.end();
+		loggedStr = str;
 	};
 
-	let app = sushi();
+	const app = sushi();
 	app.use(help('my help message'));
-	app.run(['-h']);
+
+	await app.run(['--help']);
+
+	t.is(loggedStr, 'my help message');
+
+	console.log = originalLog;
 });

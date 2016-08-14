@@ -1,25 +1,16 @@
 'use strict';
 
-/**
- * Help message middleware for Sushi
- */
+function help(text) {
+	return function * (next) {
+		const hasHelpFlag = this.argv.indexOf('-h') >= 0 || this.argv.indexOf('--help') >= 0;
 
-function help (message) {
-	return function (req, next) {
-		var isHelp = req.args.help || req.args.h;
-
-		if (isHelp) {
-			console.log(message);
+		if (hasHelpFlag) {
+			console.log(text);
 			return;
 		}
 
-		next();
+		yield * next;
 	};
 }
-
-
-/**
- * Expose middleware
- */
 
 module.exports = help;
